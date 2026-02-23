@@ -8,7 +8,6 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../../modules/linux/home-assistant.nix
     ];
   
   boot.loader.systemd-boot.enable = true;
