@@ -16,10 +16,9 @@
     in {
       nixosConfigurations.thinkserver1 = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit home-manager; };
         modules = [
           ./hosts/thinkserver1/configuration.nix
-          ./modules/linux/home-assistant.nix
+          ./modules/home-assistant.nix
         ];
       };
 
@@ -27,7 +26,6 @@
         inherit pkgs;
         modules = [
           ./hosts/thinkserver1/home.nix
-          ./modules/shared/home-manager.nix
         ];
       };
     };

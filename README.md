@@ -1,12 +1,25 @@
-# Nix Home Manager Config
+# NixOS Configuration
 
-Modular Home Manager configuration for macOS and NixOS.
+Simple NixOS and Home Manager configuration for thinkserver1.
+
+## Services
+
+- **Home Assistant**: Home automation running on port 8123
+
+## Hosts
+
+- **thinkserver1**: NixOS server with Home Assistant
 
 ## Usage
 
-### Apply configuration
+### Apply NixOS system configuration
 ```bash
-nix run home-manager/master -- switch
+sudo nixos-rebuild switch --flake .#thinkserver1
+```
+
+### Apply Home Manager configuration
+```bash
+home-manager switch --flake .#emorio@thinkserver1
 ```
 
 ### Update flake inputs
@@ -14,38 +27,26 @@ nix run home-manager/master -- switch
 nix flake update
 ```
 
-### Test compilation
-```bash
-nix build .#homeConfigurations.emorio@macbook-m2-pro.activationPackage
-```
-
 ## Structure
 
 ```
-├── flake.nix                 # Entry point with host definitions
+├── flake.nix                          # Entry point with host definitions
 ├── hosts/
-│   ├── macbook-m2-pro/       # macOS host config
-│   └── thinkcentre-i5-32gb/  # NixOS host config (root user)
+│   └── thinkserver1/
+│       ├── configuration.nix            # NixOS system configuration
+│       ├── hardware-configuration.nix    # Hardware-specific configuration
+│       └── home.nix                   # Home Manager user configuration
 └── modules/
-    ├── darwin/               # macOS-specific modules
-    │   └── packages.nix
-    └── shared/               # Shared modules
-        └── home-manager.nix
+    └── home-assistant.nix              # Home Assistant module
 ```
 
-## Configuration
+## Network Configuration
 
-### Add packages
-Edit `modules/darwin/packages.nix`:
-```nix
-home.packages = with pkgs; [
-  fzf
-  ripgrep
-];
-```
+- **IP**: 192.168.2.201
+- **Gateway**: 192.168.2.254
+- **DNS**: 1.1.1.1, 8.8.8.8
 
-### Modify host settings
-Edit `hosts/<hostname>/home.nix` for host-specific changes.
+## Access Services
 
-### Shared settings
-Edit `modules/shared/home-manager.nix` for settings used across all hosts.
+- **SSH**: `ssh emorio@thinkserver1`
+- **Home Assistant**: http://192.168.2.201:8123
