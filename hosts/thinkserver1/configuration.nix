@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./docker-home-assistant.nix
     ];
   
   boot.loader.systemd-boot.enable = true;
@@ -77,12 +78,13 @@
   # programs.firefox.enable = true;
 
   # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
+  # You can use https://search.nixos.org/ to find packages (and your packages and OS are pulled from
   environment.systemPackages = with pkgs; [
      vim
      git
      htop
      tmux
+     docker-compose
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -94,6 +96,11 @@
   # };
 
   # List services that you want to enable:
+
+  # Enable Docker
+  virtualisation.docker.enable = true;
+  virtualisation.docker.autoPrune.enable = true;
+  virtualisation.docker.autoPrune.dates = "weekly";
 
   # Enable the OpenSSH daemon.
   services.openssh = {

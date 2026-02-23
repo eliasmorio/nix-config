@@ -18,7 +18,6 @@
         inherit system;
         modules = [
           ./hosts/thinkserver1/configuration.nix
-          ./modules/home-assistant.nix
         ];
       };
 
