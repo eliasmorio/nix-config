@@ -1,8 +1,8 @@
 {
-  description = "Home Manager configuration for NixOS";
+  description = "NixOS and Home Manager configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -11,20 +11,24 @@
 
   outputs = { self, nixpkgs, home-manager, ... }:
     let
-      user = "emorio";
-      email = "emorio@users.noreply.github.com";
-      linuxSystem = "x86_64-linux";
-      linuxPkgs = nixpkgs.legacyPackages.${linuxSystem};
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
     in {
-      nixosConfigurations.thinkcentre-i5-32gb = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./hosts/thinkcentre-i5-32gb/configuration.nix ];
+      nixosConfigurations.thinkserver1 = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit home-manager; };
+        modules = [
+          ./hosts/thinkserver1/configuration.nix
+          ./modules/linux/home-assistant.nix
+        ];
       };
 
-      homeConfigurations."root@thinkcentre-i5-32gb" = home-manager.lib.homeManagerConfiguration {
-        pkgs = linuxPkgs;
-        extraSpecialArgs = { inherit user email; };
-        modules = [ ./hosts/thinkcentre-i5-32gb/home.nix ];
+      homeManagerConfigurations."emorio@thinkserver1" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./hosts/thinkserver1/home.nix
+          ./modules/shared/home-manager.nix
+        ];
       };
     };
 }

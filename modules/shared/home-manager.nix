@@ -1,12 +1,15 @@
-{ config, pkgs, user, email, ... }:
+{ config, pkgs, ... }:
 {
-  programs.git = {
+  home.stateVersion = "25.11";
+
+  programs.zsh = {
     enable = true;
-    settings = {
-      user = {
-        name = user;
-        email = email;
-      };
-    };
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
   };
+
+  editorconfig.enable = true;
+
+  xdg.enable = true;
 }
