@@ -18,6 +18,11 @@
       linuxSystem = "x86_64-linux";
       linuxPkgs = nixpkgs.legacyPackages.${linuxSystem};
     in {
+      nixosConfigurations.thinkcentre-i5-32gb = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./hosts/thinkcentre-i5-32gb/configuration.nix ];
+      };
+
       homeConfigurations."emorio@macbook-m2-pro" = home-manager.lib.homeManagerConfiguration {
         pkgs = darwinPkgs;
         extraSpecialArgs = { inherit user email; };
