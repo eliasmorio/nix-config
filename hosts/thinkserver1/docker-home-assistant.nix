@@ -7,7 +7,7 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      WorkingDirectory = "/home/emorio/nix-config/hosts/thinkserver1";
+      WorkingDirectory = "/etc/nixos-config/hosts/thinkserver1";
       ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f docker-compose.yml up -d";
       ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f docker-compose.yml down";
       User = "root";
