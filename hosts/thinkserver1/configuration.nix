@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./docker-home-assistant.nix
+      ../../modules/wireguard.nix
     ];
   
   boot.loader.systemd-boot.enable = true;
