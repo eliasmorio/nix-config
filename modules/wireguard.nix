@@ -17,7 +17,7 @@
 
     peers = [
       {
-        publicKey = "CLE_PUBLIQUE_CLIENT";
+        publicKey = "TOzQ2XWKkCBswpwDbq6LQ7c0inOVuI3IAWKkfqE5jhA=";
         allowedIPs = [ "10.50.0.2/32" ];
       }
     ];
