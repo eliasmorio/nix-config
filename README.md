@@ -34,3 +34,11 @@ home-manager switch --flake .#emorio@thinkserver1
 ```bash
 nix flake update
 ```
+
+## Optional: enable Git pre-commit Nix eval hook
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This runs `nix eval` for both the NixOS and Home Manager flake outputs before each commit.
