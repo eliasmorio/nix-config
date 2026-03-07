@@ -4,6 +4,6 @@ set -euo pipefail
 echo "Running Nix eval checks..."
 
 nix eval .#nixosConfigurations.thinkserver1.config.system.build.toplevel.drvPath >/dev/null
-nix eval '.#homeManagerConfigurations."emorio@thinkserver1".activationPackage.drvPath' >/dev/null
+nix eval '.#homeConfigurations."emorio@thinkserver1".activationPackage.drvPath' >/dev/null
 
 echo "Nix eval checks passed."
