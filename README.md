@@ -1,52 +1,36 @@
 # NixOS Configuration
 
-Simple NixOS and Home Manager configuration for thinkserver1.
+Minimal steps to reproduce this host setup (`thinkserver1`).
 
-## Services
+## 1) Clone
 
-- **Home Assistant**: Home automation running on port 8123
+```bash
+git clone <repo-url>
+cd nix-config
+```
 
-## Hosts
+## 2) Create WireGuard server key (required once)
 
-- **thinkserver1**: NixOS server with Home Assistant
+```bash
+sudo install -m 0700 -d /etc/wireguard
+wg genkey | sudo tee /etc/wireguard/wg0.key | wg pubkey | sudo tee /etc/wireguard/wg0.pub
+sudo chmod 600 /etc/wireguard/wg0.key
+```
 
-## Usage
+## 3) Apply system config
 
-### Apply NixOS system configuration
 ```bash
 sudo nixos-rebuild switch --flake .#thinkserver1
 ```
 
-### Apply Home Manager configuration
+## 4) Apply Home Manager config
+
 ```bash
 home-manager switch --flake .#emorio@thinkserver1
 ```
 
-### Update flake inputs
+## Optional
+
 ```bash
 nix flake update
 ```
-
-## Structure
-
-```
-├── flake.nix                          # Entry point with host definitions
-├── hosts/
-│   └── thinkserver1/
-│       ├── configuration.nix            # NixOS system configuration
-│       ├── hardware-configuration.nix    # Hardware-specific configuration
-│       └── home.nix                   # Home Manager user configuration
-└── modules/
-    └── home-assistant.nix              # Home Assistant module
-```
-
-## Network Configuration
-
-- **IP**: 192.168.2.201
-- **Gateway**: 192.168.2.254
-- **DNS**: 1.1.1.1, 8.8.8.8
-
-## Access Services
-
-- **SSH**: `ssh emorio@thinkserver1`
-- **Home Assistant**: http://192.168.2.201:8123
