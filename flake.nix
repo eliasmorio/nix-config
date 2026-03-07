@@ -21,7 +21,7 @@
         ];
       };
 
-      homeManagerConfigurations."emorio@thinkserver1" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."emorio@thinkserver1" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
           ./hosts/thinkserver1/home.nix

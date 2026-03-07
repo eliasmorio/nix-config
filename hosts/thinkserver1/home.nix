@@ -13,8 +13,10 @@
 
   programs.git = {
     enable = true;
-    userName = "eliasmorio";
-    userEmail = "eliasmorio@users.noreply.github.com";
+    settings.user = {
+      name = "eliasmorio";
+      email = "eliasmorio@users.noreply.github.com";
+    };
   };
 
   programs.zsh = {
