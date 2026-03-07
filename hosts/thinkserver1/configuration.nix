@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
       ./docker-home-assistant.nix
       ../../modules/wireguard.nix
+      ../../modules/k3s.nix
     ];
   
   boot.loader.systemd-boot.enable = true;
