@@ -7,7 +7,7 @@
       "--cluster-init"
       "--disable=traefik"
       "--disable=metrics-server"
-      "--disable=servicelb"
+      # "--disable=servicelb"
       "--write-kubeconfig-mode=0644"
     ];
   };
