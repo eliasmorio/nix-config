@@ -27,7 +27,7 @@
     }];
     
     defaultGateway = "192.168.2.254";
-    nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    nameservers = [ "192.168.2.202" ];
   };
 
   # Configure network connections interactively with nmcli or nmtui.
