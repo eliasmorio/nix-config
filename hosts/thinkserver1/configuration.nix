@@ -8,7 +8,6 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./docker-home-assistant.nix
       ../../modules/k3s.nix
     ];
 
@@ -87,7 +86,6 @@
      git
      htop
      tmux
-     docker-compose
      home-manager
   ];
 
@@ -100,11 +98,6 @@
   # };
 
   # List services that you want to enable:
-
-  # Enable Docker
-  virtualisation.docker.enable = true;
-  virtualisation.docker.autoPrune.enable = true;
-  virtualisation.docker.autoPrune.dates = "weekly";
 
   # Enable the OpenSSH daemon.
   services.openssh = {
