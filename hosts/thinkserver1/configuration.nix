@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../../modules/k3s.nix
+      ../../modules/cloudflared.nix
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
