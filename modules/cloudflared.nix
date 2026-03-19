@@ -17,7 +17,7 @@
     serviceConfig = {
       Type = "simple";
       EnvironmentFile = "/etc/cloudflared/cloudflared.env";
-      ExecStart = "${pkgs.bash}/bin/bash -ec '${pkgs.cloudflared}/bin/cloudflared tunnel run --no-autoupdate --token \"$TUNNEL_TOKEN\"'";
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run";
       Restart = "always";
       RestartSec = "5s";
     };
