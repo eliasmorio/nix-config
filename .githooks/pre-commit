@@ -3,7 +3,12 @@ set -euo pipefail
 
 echo "Running Nix eval checks..."
 
+# thinkserver1 (x86_64)
 nix eval .#nixosConfigurations.thinkserver1.config.system.build.toplevel.drvPath >/dev/null
 nix eval '.#homeConfigurations."emorio@thinkserver1".activationPackage.drvPath' >/dev/null
+
+# radxa-rock5b-1 (aarch64)
+nix eval .#nixosConfigurations.radxa-rock5b-1.config.system.build.toplevel.drvPath >/dev/null
+nix eval '.#homeConfigurations."emorio@radxa-rock5b-1".activationPackage.drvPath' >/dev/null
 
 echo "Nix eval checks passed."
