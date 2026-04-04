@@ -13,44 +13,75 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, deploy-rs, ... }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      deploy-rs,
+      ...
+    }:
     let
       # System architectures
       x86System = "x86_64-linux";
       armSystem = "aarch64-linux";
+      darwinSystem = "aarch64-darwin";
 
       # Package sets for each architecture
       pkgsX86 = nixpkgs.legacyPackages.${x86System};
       pkgsArm = nixpkgs.legacyPackages.${armSystem};
-    in {
+      pkgsDarwin = nixpkgs.legacyPackages.${darwinSystem};
+
+      # Common home-manager configuration for NixOS module integration
+      homeManagerModule = hostName: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users.emorio = import ./hosts/${hostName}/home.nix;
+        };
+      };
+    in
+    {
       # NixOS configurations
-      nixosConfigurations.thinkserver1 = nixpkgs.lib.nixosSystem {
-        system = x86System;
-        modules = [
-          ./hosts/thinkserver1/configuration.nix
-        ];
-      };
+      nixosConfigurations = {
+        thinkserver1 = nixpkgs.lib.nixosSystem {
+          system = x86System;
+          modules = [
+            home-manager.nixosModules.home-manager
+            (homeManagerModule "thinkserver1")
+            ./hosts/thinkserver1/configuration.nix
+          ];
+        };
 
-      nixosConfigurations.radxa-rock5b-1 = nixpkgs.lib.nixosSystem {
-        system = armSystem;
-        modules = [
-          ./hosts/radxa-rock5b-1/configuration.nix
-        ];
-      };
+        radxa-rock5b-1 = nixpkgs.lib.nixosSystem {
+          system = armSystem;
+          modules = [
+            home-manager.nixosModules.home-manager
+            (homeManagerModule "radxa-rock5b-1")
+            ./hosts/radxa-rock5b-1/configuration.nix
+          ];
+        };
 
-      # Home Manager configurations
-      homeConfigurations."emorio@thinkserver1" = home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsX86;
-        modules = [
-          ./hosts/thinkserver1/home.nix
-        ];
-      };
+        # VM for kernel development on UTM (Apple Silicon)
+        dev-vm = nixpkgs.lib.nixosSystem {
+          system = armSystem;
+          modules = [
+            home-manager.nixosModules.home-manager
+            (homeManagerModule "dev-vm")
+            ./hosts/dev-vm/configuration.nix
+            ./hosts/dev-vm/disk-image.nix
+          ];
+        };
 
-      homeConfigurations."emorio@radxa-rock5b-1" = home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsArm;
-        modules = [
-          ./hosts/radxa-rock5b-1/home.nix
-        ];
+        # ROCK 5B flashable image (for dd to NVMe)
+        radxa-rock5b-1-image = nixpkgs.lib.nixosSystem {
+          system = armSystem;
+          modules = [
+            home-manager.nixosModules.home-manager
+            (homeManagerModule "radxa-rock5b-1")
+            ./hosts/radxa-rock5b-1/configuration-image.nix
+          ];
+        };
       };
 
       # deploy-rs configuration
@@ -62,27 +93,69 @@
             user = "root";
             sshUser = "emorio";
             sudo = "sudo -u";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos
-              self.nixosConfigurations.thinkserver1;
+            magicRollback = true;
+            autoRollback = true;
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.thinkserver1;
           };
         };
 
         radxa-rock5b-1 = {
-          hostname = "192.168.2.205";
+          hostname = "192.168.2.73";
           remoteBuild = true;
           profiles.system = {
             user = "root";
             sshUser = "emorio";
             sudo = "sudo -u";
-            path = deploy-rs.lib.aarch64-linux.activate.nixos
-              self.nixosConfigurations.radxa-rock5b-1;
+            magicRollback = true;
+            autoRollback = true;
+            path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.radxa-rock5b-1;
           };
         };
       };
 
       # Validation checks for deploy-rs
-      checks = builtins.mapAttrs
-        (system: deployLib: deployLib.deployChecks self.deploy)
-        deploy-rs.lib;
+      # Only include checks for systems that can actually run them
+      checks = {
+        ${x86System} = deploy-rs.lib.${x86System}.deployChecks self.deploy;
+        ${armSystem} = deploy-rs.lib.${armSystem}.deployChecks self.deploy;
+      };
+
+      # Formatter for `nix fmt`
+      formatter = {
+        ${x86System} = pkgsX86.nixfmt;
+        ${armSystem} = pkgsArm.nixfmt;
+        ${darwinSystem} = pkgsDarwin.nixfmt;
+      };
+
+      # Development shell with nix tooling
+      devShells = {
+        ${x86System}.default = pkgsX86.mkShell {
+          packages = with pkgsX86; [
+            nil
+            nixfmt
+            statix
+          ];
+        };
+        ${armSystem}.default = pkgsArm.mkShell {
+          packages = with pkgsArm; [
+            nil
+            nixfmt
+            statix
+          ];
+        };
+        ${darwinSystem}.default = pkgsDarwin.mkShell {
+          packages = with pkgsDarwin; [
+            nil
+            nixfmt
+            statix
+          ];
+        };
+      };
+
+      # Bootable disk images
+      packages.${armSystem} = {
+        dev-vm-image = self.nixosConfigurations.dev-vm.config.system.build.qcow2;
+        rock5b-image = self.nixosConfigurations.radxa-rock5b-1-image.config.system.build.rawImage;
+      };
     };
 }

@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "Running nix fmt check..."
+if ! nix fmt -- --check .; then
+  echo "Format check failed. Run 'nix fmt' to fix."
+  exit 1
+fi
+
+echo "Running statix check..."
+if ! nix run nixpkgs#statix -- check .; then
+  echo "Statix found issues. Run 'nix run nixpkgs#statix -- fix .' to auto-fix some."
+  exit 1
+fi
+
 echo "Running Nix eval checks..."
 
-# thinkserver1 (x86_64)
-nix eval .#nixosConfigurations.thinkserver1.config.system.build.toplevel.drvPath >/dev/null
-nix eval '.#homeConfigurations."emorio@thinkserver1".activationPackage.drvPath' >/dev/null
+# All NixOS configurations (includes home-manager now)
+for host in thinkserver1 radxa-rock5b-1; do
+  echo "  Checking nixosConfigurations.$host..."
+  nix eval ".#nixosConfigurations.$host.config.system.build.toplevel.drvPath" >/dev/null
+done
 
-# radxa-rock5b-1 (aarch64)
-nix eval .#nixosConfigurations.radxa-rock5b-1.config.system.build.toplevel.drvPath >/dev/null
-nix eval '.#homeConfigurations."emorio@radxa-rock5b-1".activationPackage.drvPath' >/dev/null
-
-echo "Nix eval checks passed."
+echo "All checks passed."
