@@ -100,7 +100,7 @@
         };
 
         radxa-rock5b-1 = {
-          hostname = "192.168.2.73";
+          hostname = "192.168.2.205";
           remoteBuild = true;
           profiles.system = {
             user = "root";
