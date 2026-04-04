@@ -1,6 +1,12 @@
 # Disk image generation module for ROCK 5B
 # This module configures filesystems and generates a raw image suitable for dd
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}:
 
 {
   imports = [
@@ -18,7 +24,10 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/ESP";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   # Enable partition growing on first boot
@@ -28,8 +37,8 @@
   boot.initrd.availableKernelModules = [
     "nvme"
     "usbhid"
-    "uas"        # USB Attached SCSI (for USB drives)
-    "sd_mod"     # SCSI disk support
+    "uas" # USB Attached SCSI (for USB drives)
+    "sd_mod" # SCSI disk support
   ];
 
   # Platform

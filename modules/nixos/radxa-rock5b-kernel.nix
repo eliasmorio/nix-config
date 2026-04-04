@@ -117,7 +117,7 @@ in
       "uas"
       "sd_mod"
       "mmc_block"
-      "sdhci_of_dwcmshc"  # Rockchip SD/eMMC
+      "sdhci_of_dwcmshc" # Rockchip SD/eMMC
     ];
 
     # Ensure no extra modules are requested that don't exist

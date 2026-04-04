@@ -13,12 +13,12 @@
     ../../modules/nixos/users/emorio.nix
     ../../modules/nixos/ssh-server.nix
     ../../modules/nixos/node-exporter.nix
-    ../../modules/nixos/radxa-rock5b-kernel.nix
+    # ../../modules/nixos/radxa-rock5b-kernel.nix
     # ../../modules/k3s-single.nix
   ];
 
-  # Enable Radxa ROCK 5B custom kernel with Mali GPU support
-  hardware.radxa-rock5b.enable = true;
+  # Use latest mainline kernel (matches working /etc/nixos config)
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Bootloader (kernel is configured via radxa-rock5b-kernel module)
   boot.loader = {
