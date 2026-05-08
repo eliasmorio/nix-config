@@ -7,6 +7,7 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/users/emorio.nix
     ../../modules/nixos/ssh-server.nix
+    ../../modules/k3s-agent.nix
   ];
 
   boot = {

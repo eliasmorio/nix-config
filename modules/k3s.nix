@@ -18,6 +18,9 @@
     fluxcd
   ];
 
-  networking.firewall.allowedTCPPorts = [ 6443 ];
+  networking.firewall.allowedTCPPorts = [
+    6443
+    10250
+  ];
   networking.firewall.allowedUDPPorts = [ 8472 ];
 }

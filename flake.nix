@@ -62,26 +62,6 @@
           ];
         };
 
-        # VM for kernel development on UTM (Apple Silicon)
-        dev-vm = nixpkgs.lib.nixosSystem {
-          system = armSystem;
-          modules = [
-            home-manager.nixosModules.home-manager
-            (homeManagerModule "dev-vm")
-            ./hosts/dev-vm/configuration.nix
-            ./hosts/dev-vm/disk-image.nix
-          ];
-        };
-
-        # ROCK 5B flashable image (for dd to NVMe)
-        radxa-rock5b-1-image = nixpkgs.lib.nixosSystem {
-          system = armSystem;
-          modules = [
-            home-manager.nixosModules.home-manager
-            (homeManagerModule "radxa-rock5b-1")
-            ./hosts/radxa-rock5b-1/configuration-image.nix
-          ];
-        };
       };
 
       # deploy-rs configuration
@@ -152,10 +132,5 @@
         };
       };
 
-      # Bootable disk images
-      packages.${armSystem} = {
-        dev-vm-image = self.nixosConfigurations.dev-vm.config.system.build.qcow2;
-        rock5b-image = self.nixosConfigurations.radxa-rock5b-1-image.config.system.build.rawImage;
-      };
     };
 }

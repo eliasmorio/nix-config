@@ -4,10 +4,10 @@ Multi-host NixOS configuration with Home Manager integration and deploy-rs for r
 
 ## Hosts
 
-| Host | Architecture | Description |
-|------|--------------|-------------|
-| `thinkserver1` | x86_64-linux | Main server with k3s and Cloudflare tunnel |
-| `radxa-rock5b-1` | aarch64-linux | ARM64 single-board computer |
+| Host             | Architecture  | Description                                |
+| ---------------- | ------------- | ------------------------------------------ |
+| `thinkserver1`   | x86_64-linux  | Main server with k3s and Cloudflare tunnel |
+| `radxa-rock5b-1` | aarch64-linux | ARM64 single-board computer                |
 
 ## Quick Start
 
@@ -40,6 +40,15 @@ Home Manager is now integrated into NixOS, so a single command deploys everythin
 sudo nixos-rebuild switch --flake .#thinkserver1
 ```
 
+### K3S reset
+
+```bash
+sudo systemctl stop k3s
+sudo rm -rf /var/lib/rancher/k3s
+sudo nixos-rebuild switch --flake .#thinkserver1
+sudo systemctl start k3s
+```
+
 ## Remote Deployment with deploy-rs
 
 Deploy to remote hosts:
@@ -64,6 +73,7 @@ nix develop
 ```
 
 This provides:
+
 - `nil` - Nix language server
 - `nixfmt` - Nix formatter
 - `statix` - Nix linter
@@ -95,6 +105,7 @@ git config core.hooksPath .githooks
 ```
 
 This runs:
+
 1. Format check (`nix fmt --check`)
 2. Linting (`statix check`)
 3. Nix evaluation for all configurations
